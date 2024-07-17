@@ -4,6 +4,7 @@ import java.security.Principal;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,7 +17,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.mysite.social.board.Board;
 import com.mysite.social.board.BoardService;
-import com.mysite.social.user.SiteUser;
 import com.mysite.social.user.UserService;
 
 import jakarta.validation.Valid;
@@ -29,61 +29,70 @@ public class AnswerController {
 	private final BoardService boardService;
 	private final AnswerService answerService;
 	private final UserService userService;
+
 //	@PreAuthorize("isAuthenticated()")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PostMapping("/create/{id}")
-	public String createAnswer(Model model, @PathVariable("id") Integer id, @Valid AnswerForm answerForm, BindingResult bindingResult, Principal principal) {
+	public String createAnswer(Model model, @PathVariable("id") Integer id, @Valid AnswerForm answerForm,
+			BindingResult bindingResult, Principal principal, Authentication authentication) {
 		Board board = this.boardService.getBoard(id);
-		SiteUser siteUser = this.userService.getUser(principal.getName());
-		if(bindingResult.hasErrors()) {
+		String providerid = userService.getProviderId(authentication);
+		if (bindingResult.hasErrors()) {
 			model.addAttribute("board", board);
 			return "board_detail";
 		}
-		Answer answer = this.answerService.create(board, answerForm.getContent(), siteUser);
+		Answer answer = this.answerService.create(board, answerForm.getContent(), providerid);
 		return String.format("redirect:/board/detail/%s#answer_%s", answer.getBoard().getId(), answer.getId());
 	}
 
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/modify/{id}")
-	public String ansewrModify(AnswerForm answerForm, @PathVariable("id") Integer id, Principal principal) {
+	public String ansewrModify(AnswerForm answerForm, @PathVariable("id") Integer id, Principal principal, Authentication authentication) {
 		Answer answer = this.answerService.getAnswer(id);
-		if(!answer.getAuthor().getUsername().equals(principal.getName())) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"수정 권한이 없습니다.");
+		String providerid = userService.getProviderId(authentication);
+		if (!answer.getAuthor().equals(providerid)) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다.");
 		}
 		answerForm.setContent(answer.getContent());
 		return "answer_form";
 	}
+
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/modify/{id}")
-	public String answerModify(@Valid AnswerForm answerForm, BindingResult bindingResult, @PathVariable("id") Integer id, Principal principal) {
-		if(bindingResult.hasErrors()) {
+	public String answerModify(@Valid AnswerForm answerForm, BindingResult bindingResult,
+			@PathVariable("id") Integer id, Principal principal, Authentication authentication) {
+		if (bindingResult.hasErrors()) {
 			return "answer_form";
 		}
 		Answer answer = this.answerService.getAnswer(id);
-		if(!answer.getAuthor().getUsername().equals(principal.getName())) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"수정 권한이 없습니다.");
+		String providerid = userService.getProviderId(authentication);
+		if (!answer.getAuthor().equals(providerid)) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다.");
 		}
 		this.answerService.modify(answer, answerForm.getContent());
 		return String.format("redirect:/board/detail/%s#answer_%s", answer.getBoard().getId(), answer.getId());
 	}
-	
+
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/delete/{id}")
-	public String answerDelete(Principal principal, @PathVariable("id") Integer id) {
+	public String answerDelete(Principal principal, @PathVariable("id") Integer id, Authentication authentication) {
 		Answer answer = this.answerService.getAnswer(id);
-		if(!answer.getAuthor().getUsername().equals(principal.getName())) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"삭제 권한이 없습니다.");
+		String providerid = userService.getProviderId(authentication);
+		if (!answer.getAuthor().equals(providerid)) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제 권한이 없습니다.");
 		}
 		this.answerService.delete(answer);
 		return String.format("redirect:/board/detail/%s", answer.getBoard().getId());
 	}
-	
+
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/vote/{id}")
-	public String answerVote(Principal principal, @PathVariable("id") Integer id) {
+	public String answerVote(Model model, Principal principal, @PathVariable("id") Integer id, Authentication authentication) {
 		Answer answer = this.answerService.getAnswer(id);
-		SiteUser siteUser = this.userService.getUser(principal.getName());
-		this.answerService.vote(answer, siteUser);
+		String name = userService.getUserName(authentication);
+		model.addAttribute("name", name);
+		String providerid = userService.getProviderId(authentication);
+		this.answerService.vote(answer, providerid);
 		return String.format("redirect:/board/detail/%s#answer_%s", answer.getBoard().getId(), answer.getId());
 	}
 }

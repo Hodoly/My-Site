@@ -1,0 +1,44 @@
+<html layout:decorate="~{popup_layout}">
+<div layout:fragment="content" class="container my-3">
+	<h2 th:switch="${kind}" class="border-bottom py-2">
+		<span th:case="'room'" th:text="'회의실 예약 | ' + ${reservation.subject}"></span>
+		<span th:case="'car'" th:text="'차량 예약 | ' + ${reservation.subject}"></span>
+	</h2>
+	<div>
+		<table class="table table-bordered">
+			<tr>
+				<th scope="row">created at</th>
+				<td th:text="${#temporals.format(reservation.createDate, 'yyyy-MM-dd HH:mm')}"></td>
+				<th scope="row" th:if="${reservation.modifyDate != null}">modified at</th>
+				<td th:if="${reservation.modifyDate != null}"
+					th:text="${#temporals.format(reservation.modifyDate, 'yyyy-MM-dd HH:mm')}"></td>
+			</tr>
+			<tr th:if="${reservation.author!=null}">
+				<th scrope="row">예약자</th>
+				<td colspan="3" th:text="${reservation.authorName}"></td>
+			</tr>
+			<tr th:if="${reservation.author!=null}">
+				<th scrope="row">회의실</th>
+				<td colspan="3" th:text="${resourcename}"></td>
+			</tr>
+			<tr>
+				<th scope="row">날짜</th>
+				<td colspan="3" th:text="${start} + ' ~ ' + ${endDateTime}"></td>
+			</tr>
+		</table>
+		<div class="my-3">
+			<a th:href="@{|/reservation/modify/${reservation.id}/${kind}|}" class="btn btn-sm btn-outline-secondary"
+				sec:authorize="isAuthenticated()"
+				th:if="${reservation.author != null and reservation.author == providerid}" th:text="수정">
+			</a>
+			<a href="javascript:void(0);" th:data-uri="@{|/reservation/delete/${reservation.id}|}"
+				class="delete btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"
+				th:if="${reservation.author != null and reservation.author == providerid}" th:text="삭제">
+			</a>
+		</div>
+	</div>
+</div>
+<script layout:fragment="script" type="text/javascript" th:src="@{/js/reservation_detail.js}"></script>
+</div>
+
+</html>

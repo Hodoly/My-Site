@@ -25,7 +25,6 @@ import com.mysite.social.answer.Answer;
 import com.mysite.social.answer.AnswerForm;
 import com.mysite.social.answer.AnswerService;
 import com.mysite.social.board.*;
-import com.mysite.social.user.SiteUser;
 import com.mysite.social.user.UserService;
 
 import jakarta.validation.Valid;

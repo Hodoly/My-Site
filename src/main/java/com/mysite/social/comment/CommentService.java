@@ -9,7 +9,6 @@ import com.mysite.social.answer.Answer;
 import com.mysite.social.answer.AnswerRepository;
 import com.mysite.social.board.Board;
 import com.mysite.social.board.BoardRepository;
-import com.mysite.social.user.SiteUser;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,11 +19,11 @@ public class CommentService {
 	private final BoardRepository questionRepository;
 	private final AnswerRepository answerRepository;
 	
-	public Comment create(Board board, Answer answer, String content, SiteUser author, String kind) {
+	public Comment create(Board board, Answer answer, String content, String providerid, String kind) {
 		Comment comment = new Comment();
 		comment.setContent(content);
 		comment.setCreateDate(LocalDateTime.now());
-		comment.setAuthor(author);
+		comment.setAuthor(providerid);
 		comment.setKind(kind);
 		if(board != null) {
 			comment.setBoard(board);

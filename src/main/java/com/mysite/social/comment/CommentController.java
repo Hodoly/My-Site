@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,7 +27,6 @@ import com.mysite.social.answer.AnswerForm;
 import com.mysite.social.answer.AnswerService;
 import com.mysite.social.board.Board;
 import com.mysite.social.board.BoardService;
-import com.mysite.social.user.SiteUser;
 import com.mysite.social.user.UserService;
 
 import jakarta.validation.Valid;
@@ -44,31 +44,31 @@ public class CommentController {
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/create/q/{id}")
 	public String commentCreateQuestion(Model model, @PathVariable("id") Integer id, @Valid CommentForm commentForm,
-			BindingResult bindingResult, Principal principal) {
+			BindingResult bindingResult, Principal principal, Authentication authentication) {
 		Board board = this.boardService.getBoard(id);
-		SiteUser siteUser = this.userService.getUser(principal.getName());
+		String providerid = userService.getProviderId(authentication);
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("commentForm", new Comment());
 			model.addAttribute("question", board);
 			return "question_detail";
 		}
-		this.commentService.create(board, null, commentForm.getContent(), siteUser, "1");
+		this.commentService.create(board, null, commentForm.getContent(), providerid, "1");
 		return String.format("redirect:/question/detail/%s", board.getId());
 	}
 
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/create/a/{id}")
 	public String commentCreateAnswer(Model model, @PathVariable("id") Integer id, @Valid CommentForm commentForm,
-			BindingResult bindingResult, Principal principal) {
+			BindingResult bindingResult, Principal principal, Authentication authentication) {
 		Answer answer = this.answerService.getAnswer(id);
 		Board board = answerService.getAnswer(id).getBoard();
-		SiteUser siteUser = this.userService.getUser(principal.getName());
+		String providerid = userService.getProviderId(authentication);
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("commentForm", new Comment());
 			model.addAttribute("answer", answer);
 			return "question_detail";
 		}
-		this.commentService.create(null, answer, commentForm.getContent(), siteUser, "2");
+		this.commentService.create(null, answer, commentForm.getContent(), providerid, "2");
 		return String.format("redirect:/question/detail/%s", board.getId());
 	}
 

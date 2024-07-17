@@ -7,7 +7,6 @@ import java.util.Set;
 import com.mysite.social.answer.Answer;
 import com.mysite.social.category.Category;
 import com.mysite.social.comment.Comment;
-import com.mysite.social.user.SiteUser;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -15,7 +14,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToOne;import jakarta.transaction.Transactional;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
@@ -44,15 +43,16 @@ public class Board {
 	@OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
 	private List<Comment> commentList;
 	
-	@ManyToOne
-	private SiteUser author;
+	private String author;
+	
+	private String authorname;
 	
 	@ManyToOne
 	private Category category;
 	
 	private LocalDateTime modifyDate;
 	
-	@ManyToMany
-	Set<SiteUser> voter;
+	@Column(unique = true)
+	Set<String> voter;
 	
 }

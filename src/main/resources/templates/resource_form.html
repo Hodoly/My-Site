@@ -1,0 +1,27 @@
+<html layout:decorate="~{layout}">
+<div layout:fragment="content" class="container">
+	<h5 class="my-3 border-bottom pb-2">자원 등록</h5>
+	<form th:object="${resourceForm}" method="post">
+		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+		<div th:replace="~{form_errors :: formErrorsFragment}"></div>
+		<div class="mb-3">
+			<label for="name" class="form-label">명칭</label>
+			<input type="text" th:field="*{name}" class="form-control" style="display: inline; width: 150px;">
+		</div>
+		<div class="mb-3">
+			<label for="kind">종류</label>
+			<select name="kind" id="kind">
+				<option th:text="회의실" th:value="1"></option>
+				<option th:text="차량" th:value="2"></option>
+			</select>
+		</div>
+		<div class="mb-3">
+			<label for="color">색상 지정</label>
+			<input type="color" id="colorPicker" style="vertical-align: middle;">
+			<input type="text" id="color" class="form-control" name="color" style="display: inline; width: 150px;">
+		</div>
+		<input type="submit" value="자원등록" class="btn btn-primary my-2">
+	</form>
+</div>
+</html>
+<script type="text/javascript" th:src="@{/js/resource.js}"></script>

@@ -1,14 +1,11 @@
-package com.mysite.social.answer;
+package com.mysite.social.resource;
 
 import java.time.LocalDateTime;
-
-import org.springframework.data.annotation.CreatedDate;
-
 import java.util.List;
-import java.util.Set;
 
+import com.mysite.social.answer.Answer;
 import com.mysite.social.board.Board;
-import com.mysite.social.comment.Comment;
+import com.mysite.social.reservation.Reservation;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -16,39 +13,30 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import lombok.Getter;
 import lombok.Setter;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 
 @Getter
 @Setter
 @Entity
-public class Answer {
+public class Resource {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
 	@Column(columnDefinition = "TEXT")
-	private String content;
+	private String name;
 	
-	@CreatedDate
+	private String kind;
+	
+	private String color;
+	
 	private LocalDateTime createDate;
-	
-	@ManyToOne
-	private Board board;
-	
-	@OneToMany(mappedBy = "answer", cascade = CascadeType.REMOVE)
-	private List<Comment> commentList;
-	
-	private String author;
-	
-	private String authorname;
 	
 	private LocalDateTime modifyDate;
 	
-	@Column(unique = true)
-	Set<String> voter;
-	
+	@OneToMany(mappedBy = "resource", cascade = CascadeType.REMOVE)
+	private List<Reservation> reservationList;
 }

@@ -1,0 +1,41 @@
+<html layout:decorate="~{layout}">
+<div layout:fragment="content" class="container">
+	<h5 class="my-3 border-bottom pb-2">자원</h5>
+	<div>
+		<table class="table table-bordered">
+			<tr>
+				<th scope="row">created at</th>
+				<td th:text="${#temporals.format(resource.createDate, 'yyyy-MM-dd HH:mm')}"></td>
+				<th scope="row" th:if="${resource.modifyDate != null}">modified at</th>
+				<td th:if="${resource.modifyDate != null}"
+					th:text="${#temporals.format(resource.modifyDate, 'yyyy-MM-dd HH:mm')}"></td>
+			</tr>
+			<tr>
+				<th scope="row">명칭</th>
+				<td th:text="${resource.name}"></td>
+			</tr>
+			<tr>
+				<th scope="row">종류</th>
+				<td>
+					<span th:switch="${resource.kind}">
+						<span th:case="'1'">회의실</span>
+						<span th:case="'2'">차량</span>
+					</span>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row">색상 지정</th>
+				<td th:text="${resource.color}"></td>
+			</tr>
+		</table>
+		<a th:href="@{|/resource/modify/${resource.id}|}" class="btn btn-sm btn-outline-secondary"
+			sec:authorize="isAuthenticated()" th:text="수정">
+		</a>
+		<a th:href="@{|/resource/delete/${resource.id}|}" class="btn btn-sm btn-outline-secondary"
+			sec:authorize="isAuthenticated()" th:text="삭제">
+		</a>
+	</div>
+</div>
+
+</html>
+<script type="text/javascript" th:src="@{/js/resource.js}"></script>

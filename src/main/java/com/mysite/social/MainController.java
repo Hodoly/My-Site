@@ -12,35 +12,41 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import com.mysite.social.oauth.CustomOAuth2User;
-import com.mysite.social.user.SiteUser;
 import com.mysite.social.user.UserService;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+
 @RequiredArgsConstructor
 @Controller
 public class MainController {
 	private final UserService userService;
-	
+
 	@GetMapping("/")
-	public String root(Model model) {
-		String nickname = userService.getNickName();
-		model.addAttribute("nickname", nickname);
-        return "home";
+	public String root(Model model, Authentication authentication) {
+		if (authentication != null) {
+			String name = userService.getUserName(authentication);
+			model.addAttribute("name", name);
+		}
+		return "home";
 	}
-	
+
 	@GetMapping("/board")
-	public String boardMain(Model model) {
-		String nickname = userService.getNickName();
-		model.addAttribute("nickname", nickname);
+	public String boardMain(Model model, Authentication authentication) {
+		if (authentication != null) {
+			String name = userService.getUserName(authentication);
+			model.addAttribute("name", name);
+		}
 		return "redirect:/board/list";
 	}
-	
+
 	@GetMapping("/calendar_home")
-	public String calendarMain(Model model) {
-		String nickname = userService.getNickName();
-		model.addAttribute("nickname", nickname);
+	public String calendarMain(Model model, Authentication authentication) {
+		if (authentication != null) {
+			String name = userService.getUserName(authentication);
+			model.addAttribute("name", name);
+		}
 		return "redirect:/calendar/home";
 	}
-	
+
 }

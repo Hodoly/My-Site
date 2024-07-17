@@ -18,14 +18,13 @@ public interface BoardRepository extends JpaRepository<Board, Integer>{
 	@Query("select "
 			+ "distinct b "
 			+ "from Board b "
-			+ "left outer join SiteUser u1 on b.author=u1 "
 			+ "left outer join Answer a on a.board=b "
-			+ "left outer join SiteUser u2 on a.author=u2 "
 			+ "where "
 			+ "		b.subject like %:kw% "
-			+ "		or b.content like %:kw% "
-			+ "		or u1.username like %:kw% "
-			+ "		or a.content like %:kw% "
-			+ "		or u2.username like %:kw% ")
+//			+ "		or a.subject like %:kw% "
+//			+ "		or b.content like %:kw% "
+//			+ "		or b.authorname like %:kw% "
+//			+ "		or a.authorname like %:kw% "
+			+ "		or a.content like %:kw% ")
 	Page<Board> findAllByKeyword(@Param("kw") String kw, Pageable pageable);
 }

@@ -13,7 +13,33 @@ document.addEventListener('DOMContentLoaded', function() {
 			get_schedule: {
 				text: '일정불러오기',
 				click: function() {
-					alert('일정불러오기 버튼 click');
+					var token = $("meta[name='_csrf']").attr("content");
+					var header = $("meta[name='_csrf_header']").attr("content");
+
+					$.ajax({
+						url: '/calendar/get/google',
+						type: 'GET',
+						beforeSend: function(xhr) {
+							xhr.setRequestHeader(header, token);
+						},
+						contentType: "application/json; charset=utf-8",
+						success: function(result) {
+							// 기존 이벤트 제거
+							calendar.removeAllEvents();
+							
+							var events = [];
+							for (var i = 0; i < result.items.length; i++) {
+								calendar.addEventSource({
+									title: result.items[i].summary
+									, backgroundColor: result.items[i].backgroundColor
+									, googleCalendarId: result.items[i].id
+								});
+							}
+						},
+						error: function(error) {
+							failureCallback(error);
+						}
+					});
 				}
 			}
 		},
@@ -24,29 +50,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		},
 		initialView: 'dayGridMonth',
 		googleCalendarApiKey: 'AIzaSyCDpt53ZB1UMcNNCA83j_VUHTmZdykkaYw',
-		//		events: {
-		//			//				googleCalendarId: 'eabb297417f5f757a18af1969644c30d4ddf3895e1a90e6323aef819f2bea506@group.calendar.google.com',
-		//			googleCalendarId: 'f2bd4710f1a9961c54c8df15407d593f7ce9452f1c02e2237ce745f17002e746@group.calendar.google.com',
-		//			className: 'gcal-event' // an option!
-		//		},
-		eventSources: [
-			{
-				googleCalendarId: 'f2bd4710f1a9961c54c8df15407d593f7ce9452f1c02e2237ce745f17002e746@group.calendar.google.com',
-				// 클래스 지정 가능
-				className: 'gcal-event',
-				// 막대 색상 지정 가능
-				backgroundColor: 'green',
-			},
-			{
-				googleCalendarId: 'eabb297417f5f757a18af1969644c30d4ddf3895e1a90e6323aef819f2bea506@group.calendar.google.com',
-				className: 'nice-event'
-			},
-			{
-				googleCalendarId: 'choihoyeon30@gmail.com',
-				className: 'nice-event'
-			},
-		],
-
 		eventClick: function(info) {
 			// 클릭 시 구글로 이동X
 			info.jsEvent.stopPropagation();

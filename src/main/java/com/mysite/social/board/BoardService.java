@@ -16,7 +16,6 @@ import com.mysite.social.DataNotFoundException;
 import com.mysite.social.answer.Answer;
 import com.mysite.social.category.Category;
 import com.mysite.social.category.CategoryRepository;
-import com.mysite.social.user.SiteUser;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -39,17 +38,11 @@ public class BoardService {
 			@Override
 			public Predicate toPredicate(Root<Board> q, CriteriaQuery<?> query, CriteriaBuilder cb) {
 				query.distinct(true);
-				Join<Board, SiteUser> u1 = q.join("author", JoinType.LEFT);
 				Join<Board, Answer> a = q.join("answerList", JoinType.LEFT);
-				Join<Answer, SiteUser> u2 = a.join("author", JoinType.LEFT);
 				
-//				q.get("category") == category
-//				return cb.or(cb.like(q.get("subject"), "%" + kw + "%"), cb.like(q.get("content"), "%" + kw + "%"),
-//						cb.like(u1.get("username"), "%" + kw + "%"), cb.like(a.get("content"), "%" + kw + "%"),
-//						cb.like(u2.get("username"), "%" + kw + "%"));
 				Predicate keywordPredicate = cb.or(cb.like(q.get("subject"), "%" + kw + "%"),
-						cb.like(q.get("content"), "%" + kw + "%"), cb.like(u1.get("username"), "%" + kw + "%"),
-						cb.like(a.get("content"), "%" + kw + "%"), cb.like(u2.get("username"), "%" + kw + "%"));
+						cb.like(q.get("content"), "%" + kw + "%"), cb.like(q.get("authorname"), "%" + kw + "%"),
+						cb.like(a.get("content"), "%" + kw + "%"), cb.like(a.get("authorname"), "%" + kw + "%"));
 				if(ct!=0) {
 					Category category = categoryRepository.getById(ct);
 					Predicate categoryPredicate = cb.equal(q.get("category"), category);
@@ -79,7 +72,7 @@ public class BoardService {
 		}
 	}
 
-	public void create(String subject, String content, SiteUser user, int cateId) {
+	public void create(String subject, String content, String providerid, int cateId) {
 		Board q = new Board();
 		// TO-DO: 카테고리 가져오기
 		Category category = categoryRepository.getById(cateId);
@@ -87,7 +80,7 @@ public class BoardService {
 		q.setContent(content);
 		q.setCreateDate(LocalDateTime.now());
 		q.setCategory(category);
-		q.setAuthor(user);
+		q.setAuthor(providerid);
 		this.boardRepository.save(q);
 	}
 
@@ -102,8 +95,8 @@ public class BoardService {
 		this.boardRepository.delete(Board);
 	}
 
-	public void vote(Board Board, SiteUser siteUser) {
-		Board.getVoter().add(siteUser);
+	public void vote(Board Board, String providerid) {
+		Board.getVoter().add(providerid);
 		this.boardRepository.save(Board);
 	}
 }

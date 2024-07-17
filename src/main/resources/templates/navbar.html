@@ -1,5 +1,5 @@
-<nav th:fragment="navbarFragment" class="navbar navbar-expand-lg navbar-light bg-light">
-	<div class="container-fluid" style="background-color: rgba(var(--bs-light-rgb),var(--bs-bg-opacity))!important; z-index: 100;">
+<nav th:fragment="navbarFragment" class="navbar navbar-dark bg-dark">
+	<div class="container-fluid" style="background-color: rgb(33 37 41) !important; z-index: 100;">
 		<a class="navbar-brand" href="/">MY SITE</a>
 		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
 			aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
@@ -18,18 +18,21 @@
 						data-bs-toggle="dropdown" aria-expanded="false">
 						자원관리
 					</a>
-					<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-						<li><a class="dropdown-item" href="/resource">회의실관리</a></li>
-						<li><a class="dropdown-item" href="/resource">장비관리</a></li>
-						<li><a class="dropdown-item" href="/resource">차량관리</a></li>
+					<ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdownMenuLink">
+						<li><a style="color: #9b9d9e;" class="dropdown-item bg-dark"
+								href="/reservation/home/room">회의실관리</a></li>
+						<li><a style="color: #9b9d9e;" class="dropdown-item bg-dark"
+								href="/reservation/home/car">차량관리</a></li>
 					</ul>
 				</li>
 			</ul>
 			<ul class="navbar-nav flex-wrap ms-md-auto">
 				<li class="nav-item">
-					<span class="nav_link" sec:authorize="isAuthenticated()" th:text="${nickname} + 님"></span>
+					<span class="nav_link" style="color:#9b9d9e;" sec:authorize="isAuthenticated()"
+						th:text="${name} + 님"></span>
 					<a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/user/login}">로그인</a>
-					<a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/user/logout}" style="display: inline-block;">로그아웃</a>
+					<a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/user/logout}"
+						style="display: inline-block;">로그아웃</a>
 				</li>
 			</ul>
 		</div>

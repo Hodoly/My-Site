@@ -11,7 +11,6 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mysite.social.answer.Answer;
 import com.mysite.social.board.Board;
-import com.mysite.social.user.SiteUser;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -43,8 +42,9 @@ public class Comment {
 	@ManyToOne
 	private Answer answer;
 
-	@ManyToOne
-	private SiteUser author;
+	private String author;
+	
+	private String authorname;
 	
 	@Column(columnDefinition = "TEXT")
 	private String kind;

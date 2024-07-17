@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import com.mysite.social.DataNotFoundException;
 import com.mysite.social.board.Board;
-import com.mysite.social.user.SiteUser;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -30,12 +29,12 @@ import lombok.RequiredArgsConstructor;
 public class AnswerService {
 	private final AnswerRepository answerRepository;
 	
-	public Answer create(Board board, String content, SiteUser author) {
+	public Answer create(Board board, String content, String providerid) {
 		Answer answer = new Answer();
 		answer.setContent(content);
 		answer.setCreateDate(LocalDateTime.now());
 		answer.setBoard(board);
-		answer.setAuthor(author);
+		answer.setAuthor(providerid);
 		this.answerRepository.save(answer);
 		return answer;
 	}
@@ -68,8 +67,8 @@ public class AnswerService {
 		this.answerRepository.delete(answer);
 	}
 	
-	public void vote(Answer answer, SiteUser siteUser) {
-		answer.getVoter().add(siteUser);
+	public void vote(Answer answer, String providerid) {
+		answer.getVoter().add(providerid);
 		this.answerRepository.save(answer);
 	}
 }

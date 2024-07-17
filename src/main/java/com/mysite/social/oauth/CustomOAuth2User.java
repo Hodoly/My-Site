@@ -10,12 +10,13 @@ public class CustomOAuth2User implements OAuth2User {
     private OAuth2User oAuth2User;
     private String provider;
     private String providerId;
-    private String nickname;
+    private String name;
 
-    public CustomOAuth2User(OAuth2User oAuth2User, String provider, String providerId) {
+    public CustomOAuth2User(OAuth2User oAuth2User, String provider, String providerId, String name) {
         this.oAuth2User = oAuth2User;
         this.provider = provider;
         this.providerId = providerId;
+        this.name = name;
     }
 
     @Override
@@ -30,7 +31,7 @@ public class CustomOAuth2User implements OAuth2User {
 
     @Override
     public String getName() {
-        return oAuth2User.getName();
+        return name;
     }
 
     public String getProvider() {

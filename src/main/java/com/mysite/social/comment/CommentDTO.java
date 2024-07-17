@@ -13,7 +13,7 @@ public class CommentDTO {
 	private String content;
 	private String createDate;
 	private String userName;
-	private Long userId; 
+	private String userId; 
 	private String kind;
 	
     public static CommentDTO toDTO(Comment entity) {
@@ -21,8 +21,8 @@ public class CommentDTO {
         		.id(entity.getId().toString())
                 .content(entity.getContent())
                 .createDate(entity.getCreateDate().toString())
-                .userName(entity.getAuthor().getUsername())
-                .userId(entity.getAuthor().getId())
+                .userName(entity.getAuthorname())
+                .userId(entity.getAuthor())
                 .kind(entity.getKind())
                 .build();
     }

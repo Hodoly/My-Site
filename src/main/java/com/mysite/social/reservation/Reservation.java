@@ -1,54 +1,52 @@
-package com.mysite.social.answer;
+package com.mysite.social.reservation;
 
 import java.time.LocalDateTime;
-
-import org.springframework.data.annotation.CreatedDate;
-
 import java.util.List;
 import java.util.Set;
 
-import com.mysite.social.board.Board;
+import com.mysite.social.answer.Answer;
+import com.mysite.social.category.Category;
 import com.mysite.social.comment.Comment;
+import com.mysite.social.resource.Resource;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 
 @Getter
 @Setter
 @Entity
-public class Answer {
+public class Reservation {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	
-	@Column(columnDefinition = "TEXT")
-	private String content;
-	
-	@CreatedDate
+
 	private LocalDateTime createDate;
 	
-	@ManyToOne
-	private Board board;
-	
-	@OneToMany(mappedBy = "answer", cascade = CascadeType.REMOVE)
-	private List<Comment> commentList;
-	
 	private String author;
-	
-	private String authorname;
-	
+
+	private String authorName;
+
+	@ManyToOne
+	private Resource resource;
+
 	private LocalDateTime modifyDate;
 	
-	@Column(unique = true)
-	Set<String> voter;
+	private LocalDateTime startDateTime;
+
+	private LocalDateTime endDateTime;
 	
+	@Column(length = 200)
+	private String subject;
+	
+	private boolean allday;
 }
