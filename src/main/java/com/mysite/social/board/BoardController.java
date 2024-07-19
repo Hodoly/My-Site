@@ -44,14 +44,9 @@ public class BoardController {
 	@GetMapping("/list")
 	public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page,
 			@RequestParam(value = "kw", defaultValue = "") String kw,
-			@RequestParam(value = "ct", defaultValue = "0") int ct, Authentication authentication) {
+			@RequestParam(value = "ct", defaultValue = "0") int ct) {
 		Page<Board> paging = this.boardService.getList(page, kw, ct);
-		List<Category> category = this.categoryService.getCategory();
-		if (authentication != null) {
-			String name = userService.getUserName(authentication);
-			model.addAttribute("name", name);
-		}
-		model.addAttribute("category", category);
+		model.addAttribute("category", this.categoryService.getCategory());
 		model.addAttribute("paging", paging);
 		model.addAttribute("kw", kw);
 		model.addAttribute("ct", ct);
@@ -76,11 +71,11 @@ public class BoardController {
 		Page<Answer> paging = this.answerService.getAnswer(board, page);
 		Category category = board.getCategory();
 		if (authentication != null) {
-			String name = userService.getUserName(authentication);
-			model.addAttribute("name", name);
+			String providerid = userService.getProviderId(authentication);
+			model.addAttribute("providerid", providerid);
 		}
 		model.addAttribute("category", category.getName());
-		model.addAttribute("categoryid", category.getId());
+		model.addAttribute("kind", category.getUseAnswer());
 		model.addAttribute("paging", paging);
 		model.addAttribute("board", board);
 		model.addAttribute("commentForm", new Comment());
@@ -89,11 +84,8 @@ public class BoardController {
 
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/create")
-	public String boardCreate(Model model, BoardForm boardForm, Authentication authentication) {
-		List<Category> category = this.categoryService.getCategory();
-		String name = userService.getUserName(authentication);
-		model.addAttribute("name", name);
-		model.addAttribute("category", category);
+	public String boardCreate(Model model, BoardForm boardForm) {
+		model.addAttribute("category", this.categoryService.getCategory());
 		return "board_form";
 	}
 
@@ -103,10 +95,9 @@ public class BoardController {
 		if (bindingResult.hasErrors()) {
 			return "board_form";
 		}
-		String name = userService.getUserName(authentication);
 		String providerid = userService.getProviderId(authentication);
-		model.addAttribute("name", name);
-		this.boardService.create(boardForm.getSubject(), boardForm.getContent(), providerid, boardForm.getCategory());
+		String name = userService.getUserName(authentication);
+		this.boardService.create(boardForm.getSubject(), boardForm.getContent(), providerid, name, boardForm.getCategory());
 		return "redirect:/board/list";
 	}
 
@@ -118,10 +109,7 @@ public class BoardController {
 		if (!board.getAuthor().equals(providerid)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다.");
 		}
-		String name = userService.getUserName(authentication);
-		List<Category> category = this.categoryService.getCategory();
-		model.addAttribute("name", name);
-		model.addAttribute("category", category);
+		model.addAttribute("category", this.categoryService.getCategory());
 		boardForm.setSubject(board.getSubject());
 		boardForm.setContent(board.getContent());
 		return "board_form";
@@ -136,39 +124,24 @@ public class BoardController {
 		}
 		Board board = this.boardService.getBoard(id);
 		String providerid = userService.getProviderId(authentication);
-		String name = userService.getUserName(authentication);
 		if (!board.getAuthor().equals(providerid)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다.");
 		}
-		model.addAttribute("name", name);
-		List<Category> category = this.categoryService.getCategory();
-		model.addAttribute("category", category);
+		model.addAttribute("category", this.categoryService.getCategory());
 		this.boardService.modify(board, boardForm.getSubject(), boardForm.getContent());
 		return String.format("redirect:/board/detail/%s", id);
 	}
 
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/delete/{id}")
-	public String boardDelete(Model model, @PathVariable("id") Integer id, Authentication authentication) {
+	public String boardDelete(@PathVariable("id") Integer id, Authentication authentication) {
 		String providerid = userService.getProviderId(authentication);
-		String name = userService.getUserName(authentication);
 		Board board = this.boardService.getBoard(id);
 		if (!board.getAuthor().equals(providerid)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제 권한이 없습니다.");
 		}
 		this.boardService.delete(board);
-		model.addAttribute("name", name);
 		return "redirect:/";
 	}
 
-	@PreAuthorize("isAuthenticated()")
-	@GetMapping("/vote/{id}")
-	public String boardVote(Model model, @PathVariable("id") Integer id, Authentication authentication) {
-		String name = userService.getUserName(authentication);
-		model.addAttribute("name", name);
-		Board board = this.boardService.getBoard(id);
-		String providerid = userService.getProviderId(authentication);
-		this.boardService.vote(board, providerid);
-		return String.format("redirect:/board/detail/%s", id);
-	}
 }

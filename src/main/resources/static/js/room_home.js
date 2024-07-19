@@ -33,7 +33,6 @@ document.addEventListener('DOMContentLoaded', function() {
 				},
 				contentType: "application/json; charset=utf-8",
 				success: function(response) {
-					debugger;
 					successCallback(response);
 				},
 				error: function(error) {

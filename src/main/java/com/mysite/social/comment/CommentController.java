@@ -47,13 +47,14 @@ public class CommentController {
 			BindingResult bindingResult, Principal principal, Authentication authentication) {
 		Board board = this.boardService.getBoard(id);
 		String providerid = userService.getProviderId(authentication);
+		String name = userService.getUserName(authentication);
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("commentForm", new Comment());
-			model.addAttribute("question", board);
-			return "question_detail";
+			model.addAttribute("board", board);
+			return "board_detail";
 		}
-		this.commentService.create(board, null, commentForm.getContent(), providerid, "1");
-		return String.format("redirect:/question/detail/%s", board.getId());
+		this.commentService.create(board, null, commentForm.getContent(), providerid, name, "1");
+		return String.format("redirect:/board/detail/%s", board.getId());
 	}
 
 	@PreAuthorize("isAuthenticated()")
@@ -63,48 +64,50 @@ public class CommentController {
 		Answer answer = this.answerService.getAnswer(id);
 		Board board = answerService.getAnswer(id).getBoard();
 		String providerid = userService.getProviderId(authentication);
+		String name = userService.getUserName(authentication);
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("commentForm", new Comment());
 			model.addAttribute("answer", answer);
 			return "question_detail";
 		}
-		this.commentService.create(null, answer, commentForm.getContent(), providerid, "2");
-		return String.format("redirect:/question/detail/%s", board.getId());
+		this.commentService.create(null, answer, commentForm.getContent(), providerid, name, "2");
+		return String.format("redirect:/board/detail/%s", board.getId());
 	}
 
 	@GetMapping("/list/{kind}/{id}/{page}")
 	@ResponseBody
-	public String getQuestionComment(@PathVariable("kind") String kind,@PathVariable("id") Integer id, @PathVariable("page") Integer page) {
+	public String getQuestionComment(@PathVariable("kind") String kind, @PathVariable("id") Integer id,
+			@PathVariable("page") Integer page) {
 		ArrayList<Comment> comment = null;
-		if(kind.equals("q")) {
+		if (kind.equals("q")) {
 			Board board = this.boardService.getBoard(id);
 			comment = this.commentService.getQuestionComment(board);
-		}else {
+		} else {
 			Answer answer = this.answerService.getAnswer(id);
 			comment = this.commentService.getAnswerComment(answer);
 		}
-		
+
 		ArrayList<CommentDTO> dto = new ArrayList<CommentDTO>();
 		int start = page * 3;
 		int end;
-		if(comment.size()<start+3) {
-			end = comment.size()-1;
-		}else {
-			end = page+2;
+		if (comment.size() < start + 3) {
+			end = comment.size() - 1;
+		} else {
+			end = page + 2;
 		}
-		
-		for(int i=start; i<=end; i++) {
-			var j=0;
+
+		for (int i = start; i <= end; i++) {
+			var j = 0;
 			try {
-				dto.add(j,CommentDTO.toDTO(comment.get(i)));
+				dto.add(j, CommentDTO.toDTO(comment.get(i)));
 				j = j + 1;
-			}catch(DataNotFoundException e){
+			} catch (DataNotFoundException e) {
 				e.printStackTrace();
 			}
-			
+
 		}
 		Gson gson = new Gson();
 		return gson.toJson(dto);
 	}
-	
+
 }

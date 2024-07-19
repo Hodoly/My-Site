@@ -29,19 +29,19 @@ import lombok.RequiredArgsConstructor;
 public class AnswerService {
 	private final AnswerRepository answerRepository;
 	
-	public Answer create(Board board, String content, String providerid) {
+	public Answer create(Board board, String content, String providerid, String name) {
 		Answer answer = new Answer();
 		answer.setContent(content);
 		answer.setCreateDate(LocalDateTime.now());
 		answer.setBoard(board);
 		answer.setAuthor(providerid);
+		answer.setAuthorname(name);
 		this.answerRepository.save(answer);
 		return answer;
 	}
 	
 	public Page<Answer> getAnswer(Board board, Integer page) {
 		List<Sort.Order> sorts = new ArrayList<>();
-		sorts.add(Sort.Order.desc("voter"));
 		sorts.add(Sort.Order.asc("createDate"));
 		Pageable pageable = PageRequest.of(page, 3, Sort.by(sorts));
 		return this.answerRepository.findByBoard(board, pageable);
@@ -67,8 +67,4 @@ public class AnswerService {
 		this.answerRepository.delete(answer);
 	}
 	
-	public void vote(Answer answer, String providerid) {
-		answer.getVoter().add(providerid);
-		this.answerRepository.save(answer);
-	}
 }

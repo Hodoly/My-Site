@@ -27,6 +27,8 @@ public class Category {
 	@Column(columnDefinition = "TEXT")
 	private String name;
 	
+	private Boolean useAnswer;
+	
 	@OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE)
 	private List<Board> boardList;
 }

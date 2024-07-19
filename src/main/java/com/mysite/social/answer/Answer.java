@@ -48,7 +48,4 @@ public class Answer {
 	
 	private LocalDateTime modifyDate;
 	
-	@Column(unique = true)
-	Set<String> voter;
-	
 }

@@ -11,12 +11,14 @@ public class CalendarEvent {
     private String title;
     private String color;
     private boolean allday;
+    private Integer id; 
     
-    public CalendarEvent(String start, String end, String title, String color, boolean allday) {
+    public CalendarEvent(String start, String end, String title, String color, boolean allday, Integer id) {
         this.start = start;
         this.end = end;
         this.title = title;
         this.color = color;
         this.allday = allday;
+        this.id = id;
     }
 }

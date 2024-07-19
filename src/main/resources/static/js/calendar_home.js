@@ -1,17 +1,25 @@
 
 document.addEventListener('DOMContentLoaded', function() {
 	$("#dialog").dialog({ autoOpen: false });
+	var provider = $("[id='provider']").val();
+	var buttons = "";
+	debugger;
+	if (provider == "google") {
+		buttons = "prev,next today show_menual get_schedule";
+	} else {
+		buttons = "prev,next today";
+	}
 	var calendarEl = document.getElementById('calendar');
 	var calendar = new FullCalendar.Calendar(calendarEl, {
 		customButtons: {
 			show_menual: {
-				text: '일정연동 메뉴얼',
+				text: '구글 연동 메뉴얼',
 				click: function() {
 					$("#dialog").dialog("open");
 				},
 			},
 			get_schedule: {
-				text: '일정불러오기',
+				text: '구글일정 불러오기',
 				click: function() {
 					var token = $("meta[name='_csrf']").attr("content");
 					var header = $("meta[name='_csrf_header']").attr("content");
@@ -26,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
 						success: function(result) {
 							// 기존 이벤트 제거
 							calendar.removeAllEvents();
-							
+
 							var events = [];
 							for (var i = 0; i < result.items.length; i++) {
 								calendar.addEventSource({
@@ -41,12 +49,30 @@ document.addEventListener('DOMContentLoaded', function() {
 						}
 					});
 				}
+			},
+			create_schedule: {
+				text: '일정 생성',
+				click: function() {
+					debugger;
+				},
+			},
+			create_schedule: {
+				text: '일정 생성',
+				click: function() {
+					debugger;
+				},
+			},
+			create_calendar: {
+				text: '캘린더 생성',
+				click: function() {
+					debugger;
+				},
 			}
 		},
 		headerToolbar: {
-			left: 'prev,next today show_menual get_schedule',
+			left: buttons,
 			center: 'title',
-			right: 'dayGridMonth,timeGridWeek,timeGridDay'
+			right: 'dayGridMonth,timeGridWeek,timeGridDay create_schedule create_calendar'
 		},
 		initialView: 'dayGridMonth',
 		googleCalendarApiKey: 'AIzaSyCDpt53ZB1UMcNNCA83j_VUHTmZdykkaYw',

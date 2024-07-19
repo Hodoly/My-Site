@@ -23,7 +23,6 @@ public class UserService {
 		if (principal instanceof CustomOAuth2User) {
 			CustomOAuth2User customOAuth2User = (CustomOAuth2User) principal;
 			providerid = customOAuth2User.getProviderId();
-			System.out.println("providerid>>>" + providerid);
 		}
 		return providerid;
 	}

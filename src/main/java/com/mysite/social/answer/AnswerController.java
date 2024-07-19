@@ -37,17 +37,19 @@ public class AnswerController {
 			BindingResult bindingResult, Principal principal, Authentication authentication) {
 		Board board = this.boardService.getBoard(id);
 		String providerid = userService.getProviderId(authentication);
+		String name = userService.getUserName(authentication);
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("board", board);
 			return "board_detail";
 		}
-		Answer answer = this.answerService.create(board, answerForm.getContent(), providerid);
+		Answer answer = this.answerService.create(board, answerForm.getContent(), providerid , name);
 		return String.format("redirect:/board/detail/%s#answer_%s", answer.getBoard().getId(), answer.getId());
 	}
 
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/modify/{id}")
-	public String ansewrModify(AnswerForm answerForm, @PathVariable("id") Integer id, Principal principal, Authentication authentication) {
+	public String ansewrModify(AnswerForm answerForm, Model model, @PathVariable("id") Integer id, Principal principal, Authentication authentication) {
+		model.addAttribute("boadr_id", id);
 		Answer answer = this.answerService.getAnswer(id);
 		String providerid = userService.getProviderId(authentication);
 		if (!answer.getAuthor().equals(providerid)) {
@@ -70,7 +72,7 @@ public class AnswerController {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다.");
 		}
 		this.answerService.modify(answer, answerForm.getContent());
-		return String.format("redirect:/board/detail/%s#answer_%s", answer.getBoard().getId(), answer.getId());
+		return String.format("redirect:/board/detail/%s", id);
 	}
 
 	@PreAuthorize("isAuthenticated()")
@@ -85,14 +87,4 @@ public class AnswerController {
 		return String.format("redirect:/board/detail/%s", answer.getBoard().getId());
 	}
 
-	@PreAuthorize("isAuthenticated()")
-	@GetMapping("/vote/{id}")
-	public String answerVote(Model model, Principal principal, @PathVariable("id") Integer id, Authentication authentication) {
-		Answer answer = this.answerService.getAnswer(id);
-		String name = userService.getUserName(authentication);
-		model.addAttribute("name", name);
-		String providerid = userService.getProviderId(authentication);
-		this.answerService.vote(answer, providerid);
-		return String.format("redirect:/board/detail/%s#answer_%s", answer.getBoard().getId(), answer.getId());
-	}
 }

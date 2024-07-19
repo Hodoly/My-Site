@@ -1,6 +1,7 @@
 <html layout:decorate="~{layout}">
 <div layout:fragment="content" class="container my-3">
 	<div id='calendar'></div>
+	<input type="hidden" id="provider" name="provider" th:value="${provider}">
 	<div id="dialog" title="일정 불러오기 메뉴얼">
 		<p>Google 캘린더를 공개로 설정하세요.</p>
 

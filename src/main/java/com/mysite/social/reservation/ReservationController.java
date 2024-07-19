@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -50,16 +50,12 @@ public class ReservationController {
 	private final ResourceService resourceService;
 
 	@GetMapping("/home/{kind}")
-	public String carHome(Model model, Authentication authentication, @PathVariable("kind") String kind) {
-		if (authentication != null) {
-			String name = userService.getUserName(authentication);
-			model.addAttribute("name", name);
-		}
+	public String reservationHome(Model model, @PathVariable("kind") String kind) {
 		return kind + "_home";
 	}
 
 	@GetMapping("/check")
-	public String reservationChk(Model model, Authentication authentication) {
+	public String reservationChk() {
 		return "reservation_check";
 	}
 
@@ -108,19 +104,16 @@ public class ReservationController {
 				end = reservation.getEndDateTime().toString();
 			}
 
-//			return new CalendarEvent(start, end, reservation.getSubject(), reservation.getResource().getColor(),
-//					reservation.isAllday(), reservation.getId());
 			return new CalendarEvent(start, end, reservation.getSubject(), reservation.getResource().getColor(),
-					reservation.isAllday());
+					reservation.isAllday(), reservation.getId());
 		}).collect(Collectors.toList());
 	}
 
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/create/{kind}")
-	public String createReservation(Model model, ReservationForm reservationFormm, Authentication authentication,
-			@PathVariable("kind") String kind) {
-		model.addAttribute("name", userService.getUserName(authentication));
+	public String createReservation(Model model, ReservationForm reservationFormm, @PathVariable("kind") String kind) {
 		model.addAttribute("resource", resourceService.getResource(kind));
+		model.addAttribute("reservation", new Reservation());
 		model.addAttribute("layout", "layout");
 		return kind + "_form";
 	}
@@ -148,7 +141,6 @@ public class ReservationController {
 		LocalDateTime startDateTime = reservationService.setStartDateTime(reservationForm, allday);
 		LocalDateTime endDateTime = reservationService.setEndDateTime(reservationForm, allday);
 
-		model.addAttribute("name", name);
 		if (reservationService.validation(startDateTime, endDateTime)) {
 			model.addAttribute("resource", resourceService.getResource(kind));
 			model.addAttribute("errorMessage", "예약 시작 시간이 종료 시간보다 늦거나 같을 수 없습니다.");
@@ -156,7 +148,7 @@ public class ReservationController {
 			return kind + "_form";
 		}
 
-		if (reservationService.overlap(null ,resource, startDateTime, endDateTime, allday)) {
+		if (reservationService.overlap(null, resource, startDateTime, endDateTime, allday)) {
 			model.addAttribute("resource", resourceService.getResource(kind));
 			model.addAttribute("errorMessage", "예약이 중복됩니다.");
 			model.addAttribute("layout", "layout");
@@ -170,9 +162,7 @@ public class ReservationController {
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/delete/{id}")
 	@ResponseBody
-	public ResponseEntity<String> reservationDelete(Model model, @PathVariable("id") Integer id,
-			Authentication authentication) {
-		model.addAttribute("name", userService.getUserName(authentication));
+	public ResponseEntity<String> reservationDelete(Model model, @PathVariable("id") Integer id, Authentication authentication) {
 		Reservation reservation = this.reservationService.getReservation(id);
 		String providerid = userService.getProviderId(authentication);
 		if (!reservation.getAuthor().equals(providerid)) {
@@ -203,9 +193,8 @@ public class ReservationController {
 		reservationForm.setStartTime(reservation.getStartDateTime().format(timeFormatter));
 		reservationForm.setEndTime(reservation.getEndDateTime().format(timeFormatter));
 		reservationForm.setResource(reservation.getResource().getId());
-		
+
 		model.addAttribute("reservation", reservation);
-		model.addAttribute("name", userService.getUserName(authentication));
 		model.addAttribute("resource", resourceService.getResource(kind));
 		model.addAttribute("layout", "popup_layout");
 		return kind + "_form";
@@ -213,7 +202,6 @@ public class ReservationController {
 
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/modify/{id}/{kind}")
-	@ResponseBody
 	public String reservaitonModify(Model model, @Valid ReservationForm reservationForm, BindingResult bindingResult,
 			@PathVariable("id") Integer id, @PathVariable("kind") String kind, Authentication authentication) {
 		if (bindingResult.hasErrors()) {
@@ -235,22 +223,22 @@ public class ReservationController {
 		LocalDateTime startDateTime = reservationService.setStartDateTime(reservationForm, allday);
 		LocalDateTime endDateTime = reservationService.setEndDateTime(reservationForm, allday);
 
-		model.addAttribute("name", name);
 		if (reservationService.validation(startDateTime, endDateTime)) {
 			model.addAttribute("resource", resourceService.getResource(kind));
 			model.addAttribute("errorMessage", "예약 시작 시간이 종료 시간보다 늦거나 같을 수 없습니다.");
-			model.addAttribute("layout", "layout");
+			model.addAttribute("layout", "popup_layout");
 			return kind + "_form";
 		}
 
 		if (reservationService.overlap(reservation, resource, startDateTime, endDateTime, allday)) {
 			model.addAttribute("resource", resourceService.getResource(kind));
 			model.addAttribute("errorMessage", "예약이 중복됩니다.");
-			model.addAttribute("layout", "layout");
+			model.addAttribute("layout", "popup_layout");
 			return kind + "_form";
 		}
-		
-		this.reservationService.modify(reservation, startDateTime, endDateTime, providerid, resource, name, subject, allday);
-		return String.format("redirect:/reservation/detail/%s/%s", id, kind);
+
+		this.reservationService.modify(reservation, startDateTime, endDateTime, providerid, resource, name, subject,
+				allday);
+		return String.format("redirect:/reservation/detail/%s/%s", kind, id);
 	}
 }

@@ -31,33 +31,35 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 	private final UserService userService;
-	
-    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+
+	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 		OAuth2User oAuth2User = super.loadUser(userRequest);
 		String registrationId = userRequest.getClientRegistration().getRegistrationId();
 		OAuth2UserInfo oAuth2UserInfo = null;
-		if(registrationId.equals("google")) {
+		if (registrationId.equals("google")) {
 			oAuth2UserInfo = new GoogleUserDetails(oAuth2User.getAttributes());
-		}else if(registrationId.equals("naver")) {
+		} else if (registrationId.equals("naver")) {
 			oAuth2UserInfo = new NaverUserDetails(oAuth2User.getAttributes());
-		}else if(registrationId.equals("kakao")) {
+		} else if (registrationId.equals("kakao")) {
 			oAuth2UserInfo = new KakaoUserDetails(oAuth2User.getAttributes());
 		}
-		
+
 		List<GrantedAuthority> authorities = new ArrayList<>();
-		if(oAuth2UserInfo.getEmail().equals("choihoyeon30@gmail.com")) {
+		if (oAuth2UserInfo.getEmail().equals("choihoyeon30@gmail.com") && oAuth2UserInfo.getProvider().equals("google")) {
 			authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-		}else {
+		} else {
 			authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 		}
-		
-		// CustomOAuth2User 객체 생성
-		CustomOAuth2User customOAuth2User = new CustomOAuth2User(oAuth2User, oAuth2UserInfo.getProvider(), oAuth2UserInfo.getProviderId(), oAuth2UserInfo.getName());
-		
-//	    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(customOAuth2User, null, authorities);
-//	    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
-	    return customOAuth2User;
+		// CustomOAuth2User 객체 생성
+		CustomOAuth2User customOAuth2User = new CustomOAuth2User(oAuth2User, oAuth2UserInfo.getProvider(),
+				oAuth2UserInfo.getProviderId(), oAuth2UserInfo.getName(), authorities);
+
+		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(customOAuth2User,
+				null, authorities);
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		
+		return customOAuth2User;
 	}
 
 }

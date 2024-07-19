@@ -72,7 +72,7 @@ public class BoardService {
 		}
 	}
 
-	public void create(String subject, String content, String providerid, int cateId) {
+	public void create(String subject, String content, String providerid, String name, int cateId) {
 		Board q = new Board();
 		// TO-DO: 카테고리 가져오기
 		Category category = categoryRepository.getById(cateId);
@@ -81,6 +81,7 @@ public class BoardService {
 		q.setCreateDate(LocalDateTime.now());
 		q.setCategory(category);
 		q.setAuthor(providerid);
+		q.setAuthorname(name);
 		this.boardRepository.save(q);
 	}
 
@@ -95,8 +96,4 @@ public class BoardService {
 		this.boardRepository.delete(Board);
 	}
 
-	public void vote(Board Board, String providerid) {
-		Board.getVoter().add(providerid);
-		this.boardRepository.save(Board);
-	}
 }

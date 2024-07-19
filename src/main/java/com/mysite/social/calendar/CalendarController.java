@@ -20,11 +20,12 @@ public class CalendarController {
 	private final CalendarService calendarService;
 	
 	@GetMapping("/home")
-	public String calendarHome(Model model, Authentication authentication) {
-		if (authentication != null) {
-			String name = userService.getUserName(authentication);
-			model.addAttribute("name", name);
+	public String calendarHome(Authentication authentication, Model model) {
+		String provider = "";
+		if(authentication != null) {
+			provider = userService.getProvider(authentication);
 		}
+		model.addAttribute("provider", provider);
 		return "calendar_home";
 	}
 	

@@ -19,11 +19,12 @@ public class CommentService {
 	private final BoardRepository questionRepository;
 	private final AnswerRepository answerRepository;
 	
-	public Comment create(Board board, Answer answer, String content, String providerid, String kind) {
+	public Comment create(Board board, Answer answer, String content, String providerid, String name, String kind) {
 		Comment comment = new Comment();
 		comment.setContent(content);
 		comment.setCreateDate(LocalDateTime.now());
 		comment.setAuthor(providerid);
+		comment.setAuthorname(name);
 		comment.setKind(kind);
 		if(board != null) {
 			comment.setBoard(board);

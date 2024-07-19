@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			// 화면의 중앙 위치 계산
 			const left = (window.screen.width / 2) - (popupWidth / 2);
 			const top = (window.screen.height / 2) - (popupHeight / 2);
-			const childWindow = window.open('/reservation/detail/room/' + eventObj.id, 'PopupWindow', `width=${popupWidth},height=${popupHeight},top=${top},left=${left}`);
+			const childWindow = window.open('/reservation/detail/room/' + eventObj.id, 'childWindow', `width=${popupWidth},height=${popupHeight},top=${top},left=${left}`);
 			// 외부 링크로 이동하는 경우 기본 동작을 막기 위해 stopPropagation() 사용 가능
 			info.jsEvent.preventDefault();
 		}

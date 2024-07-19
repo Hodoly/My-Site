@@ -48,7 +48,7 @@ public class CategoryController {
 		if (bindingResult.hasErrors()) {
 			return "category_form";
 		}
-		this.categoryService.create(categoryForm.getName());
-		return "redirect:/question/list";
+		this.categoryService.create(categoryForm.getName(), categoryForm.getUseAnswer());
+		return "redirect:/board/list";
 	}
 }

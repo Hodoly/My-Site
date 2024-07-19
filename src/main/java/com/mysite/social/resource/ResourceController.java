@@ -2,7 +2,6 @@ package com.mysite.social.resource;
 
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,12 +28,8 @@ public class ResourceController {
 	@GetMapping("/list")
 	public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page,
 			@RequestParam(value = "kw", defaultValue = "") String kw,
-			@RequestParam(value = "kd", defaultValue = "0") int kd, Authentication authentication) {
+			@RequestParam(value = "kd", defaultValue = "0") int kd) {
 		Page<Resource> paging = resourceService.getList(page, kw, kd);
-		if (authentication != null) {
-			String name = userService.getUserName(authentication);
-			model.addAttribute("name", name);
-		}
 		model.addAttribute("paging", paging);
 		model.addAttribute("kw", kw);
 		model.addAttribute("kd", kd);
@@ -42,13 +37,8 @@ public class ResourceController {
 	}
 
 	@GetMapping(value = "/detail/{id}")
-	public String detail(Model model, @PathVariable("id") Integer id, Authentication authentication) {
+	public String detail(Model model, @PathVariable("id") Integer id) {
 		Resource resource = this.resourceService.getResource(id);
-		if (authentication != null) {
-			String name = userService.getUserName(authentication);
-			model.addAttribute("name", name);
-		}
-		
 		model.addAttribute("resource", resource);
 		model.addAttribute("kind", resource.getKind());
 		return "resource_detail";
@@ -56,34 +46,24 @@ public class ResourceController {
 
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/create")
-	public String resourceCreate(Model model, ResourceForm resourceForm, Authentication authentication) {
-		if (authentication != null) {
-			String name = userService.getUserName(authentication);
-			model.addAttribute("name", name);
-		}
+	public String resourceCreate(Model model, ResourceForm resourceForm) {
 		return "resource_form";
 	}
 
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/create")
-	public String resourceCreate(Model model, @Valid ResourceForm resourceForm, BindingResult bindingResult,
-			Authentication authentication) {
+	public String resourceCreate(Model model, @Valid ResourceForm resourceForm, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			return "resource_form";
 		}
-		String name = userService.getUserName(authentication);
-		model.addAttribute("name", name);
 		this.resourceService.create(resourceForm.getName(), resourceForm.getKind(), resourceForm.getColor());
 		return "redirect:/resource/list";
 	}
 
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/modify/{id}")
-	public String resourceModify(Model model, ResourceForm resourceForm, @PathVariable("id") Integer id,
-			Authentication authentication) {
+	public String resourceModify(Model model, ResourceForm resourceForm, @PathVariable("id") Integer id) {
 		Resource resource = this.resourceService.getResource(id);
-		String name = userService.getUserName(authentication);
-		model.addAttribute("name", name);
 		resourceForm.setName(resource.getName());
 		resourceForm.setColor(resource.getColor());
 		resourceForm.setKind(resource.getKind());
@@ -93,22 +73,18 @@ public class ResourceController {
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/modify/{id}")
 	public String resourceModify(Model model, @Valid Resource resourceForm, BindingResult bindingResult,
-			@PathVariable("id") Integer id, Authentication authentication) {
+			@PathVariable("id") Integer id) {
 		if (bindingResult.hasErrors()) {
 			return "resource_form";
 		}
 		Resource resource = this.resourceService.getResource(id);
-		String name = userService.getUserName(authentication);
-		model.addAttribute("name", name);
 		this.resourceService.modify(resource, resourceForm.getName(), resourceForm.getKind(), resourceForm.getColor());
 		return String.format("redirect:/resource/detail/%s", id);
 	}
 
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/delete/{id}")
-	public String resourceDelete(Model model, @PathVariable("id") Integer id, Authentication authentication) {
-		String name = userService.getUserName(authentication);
-		model.addAttribute("name", name);
+	public String resourceDelete(Model model, @PathVariable("id") Integer id) {
 		Resource resource = this.resourceService.getResource(id);
 		this.resourceService.delete(resource);
 		return "redirect:/resource/list";

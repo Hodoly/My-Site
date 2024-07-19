@@ -2,7 +2,8 @@
 <div layout:fragment="content" class="container my-3">
 	<div class="row my-3">
 		<div class="col-7">
-			<a th:href="@{/board/create}" class="btn btn-primary">글 등록하기</a>
+			<a th:href="@{/board/create}" class="btn btn-dark">글 등록하기</a>
+			<a th:href="@{/category/create}" class="btn btn-dark">카테고리 생성</a>
 		</div>
 		<div class="col-2" style="text-align:right;">
 			<select class="form-select" name="category" id="category" style="max-width: 180px;">
@@ -38,7 +39,7 @@
 							th:text="${#lists.size(board.answerList)}"></span>
 					</td>
 					<td>
-						<span th:if="${board.author != null}" th:text="${board.author.nickname}"></span>
+						<span th:if="${board.author != null}" th:text="${board.authorname}"></span>
 					</td>
 					<td th:text="${#temporals.format(board.createDate,'yyyy-MM-dd HH:mm')}"></td>
 				</tr>

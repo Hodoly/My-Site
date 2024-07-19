@@ -1,0 +1,11 @@
+<html layout:decorate="~{layout}">
+<div layout:fragment="content" class="container">
+	<h5 class="my-3 border-bottom pb-2">답변 수정</h5>
+	<form th:action="@{|/answer/modify/${boadr_id}|}" th:object="${answerForm}" method="post" class="my-3">
+		<div th:replace="~{form_errors :: formErrorsFragment}"></div>
+		<textarea th:field="*{content}" class="form-control" rows="10"></textarea>
+		<input type="submit" value="수정" class="btn btn-dark my-2">
+	</form>
+</div>
+
+</html>

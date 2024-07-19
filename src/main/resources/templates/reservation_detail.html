@@ -7,9 +7,9 @@
 	<div>
 		<table class="table table-bordered">
 			<tr>
-				<th scope="row">created at</th>
+				<th scope="row">생성</th>
 				<td th:text="${#temporals.format(reservation.createDate, 'yyyy-MM-dd HH:mm')}"></td>
-				<th scope="row" th:if="${reservation.modifyDate != null}">modified at</th>
+				<th scope="row" th:if="${reservation.modifyDate != null}">수정</th>
 				<td th:if="${reservation.modifyDate != null}"
 					th:text="${#temporals.format(reservation.modifyDate, 'yyyy-MM-dd HH:mm')}"></td>
 			</tr>
@@ -23,7 +23,7 @@
 			</tr>
 			<tr>
 				<th scope="row">날짜</th>
-				<td colspan="3" th:text="${start} + ' ~ ' + ${endDateTime}"></td>
+				<td colspan="3" th:text="${start} + ' ~ ' + ${end}"></td>
 			</tr>
 		</table>
 		<div class="my-3">

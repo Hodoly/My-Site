@@ -12,9 +12,10 @@ import lombok.RequiredArgsConstructor;
 public class CategoryService {
 	private final CategoryRepository categoryRepository;
 
-	public Category create(String name) {
+	public Category create(String name, Boolean useAnswer) {
 		Category category = new Category();
 		category.setName(name);
+		category.setUseAnswer(useAnswer);
 		this.categoryRepository.save(category);
 		return category;
 	}
