@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CalendarEvent {
+public class ReservationEvent {
     private String start;
     private String end;
     private String title;
@@ -13,7 +13,7 @@ public class CalendarEvent {
     private boolean allday;
     private Integer id; 
     
-    public CalendarEvent(String start, String end, String title, String color, boolean allday, Integer id) {
+    public ReservationEvent(String start, String end, String title, String color, boolean allday, Integer id) {
         this.start = start;
         this.end = end;
         this.title = title;

@@ -1,0 +1,7 @@
+<html layout:decorate="~{popup_layout}">
+<div layout:fragment="content" class="container my-3">
+	<input type="hidden" id="providerid" name="providerid" th:value="${providerid}">
+	<div id='calendar'></div>
+	</div>
+</html>
+<script type="text/javascript" th:src="@{/js/calendar_check.js}"></script>

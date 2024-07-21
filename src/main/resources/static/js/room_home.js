@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
 	var calendarEl = document.getElementById('calendar');
 	var calendar = new FullCalendar.Calendar(calendarEl, {
 		customButtons: {
@@ -8,22 +10,14 @@ document.addEventListener('DOMContentLoaded', function() {
 					location.href = '/reservation/create/room';
 				},
 			},
-			resource: {
-				text: '자원',
-				click: function() {
-					location.href = '/resource/list';
-				},
-			},
 		},
 		headerToolbar: {
-			left: 'prev,next today reservation resource',
+			left:'prev,next today reservation',
 			center: 'title',
 			right: 'dayGridMonth,timeGridWeek,timeGridDay'
 		},
 		initialView: 'dayGridMonth',
 		events: function(fetchInfo, successCallback, failureCallback) {
-			var token = $("meta[name='_csrf']").attr("content");
-			var header = $("meta[name='_csrf_header']").attr("content");
 
 			$.ajax({
 				url: '/reservation/get/reservations?kind=room',
@@ -44,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			// 클릭된 이벤트 정보
 			var eventObj = info.event;
 
-			
+
 			const valueToPass = $("[id='resource']").val();
 			const popupWidth = 850;
 			const popupHeight = 500;

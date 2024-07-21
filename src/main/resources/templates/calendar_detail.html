@@ -1,0 +1,41 @@
+<html layout:decorate="~{popup_layout}">
+<div layout:fragment="content" class="container my-3">
+	<h2 th:text="'일정 | '+ ${calendar.subject}" class="border-bottom py-2"></h2>
+	<div>
+		<table class="table table-bordered">
+			<tr>
+				<th scope="row">생성</th>
+				<td th:text="${#temporals.format(calendar.createDate, 'yyyy-MM-dd HH:mm')}"></td>
+				<th scope="row" th:if="${calendar.modifyDate != null}">수정</th>
+				<td th:if="${calendar.modifyDate != null}"
+					th:text="${#temporals.format(calendar.modifyDate, 'yyyy-MM-dd HH:mm')}"></td>
+			</tr>
+			<tr th:if="${calendar.author!=null}">
+				<th scrope="row">작성자</th>
+				<td colspan="3" th:text="${calendar.authorName}"></td>
+			</tr>
+			<tr>
+				<th scope="row">날짜</th>
+				<td colspan="3" th:text="${start} + ' ~ ' + ${end}"></td>
+			</tr>
+		</table>
+		<div class="my-3">
+			<a th:href="@{|/calendar/modify/${calendar.id}|}" class="btn btn-sm btn-outline-secondary"
+				sec:authorize="isAuthenticated()" th:if="${calendar.author != null and calendar.author == providerid}"
+				th:text="수정">
+			</a>
+			<a href="javascript:void(0);" th:data-uri="@{|/calendar/delete/${calendar.id}|}"
+				class="delete btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"
+				th:if="${calendar.author != null and calendar.author == providerid}" th:text="삭제">
+			</a>
+			<a th:href="@{|/calendar/push/${calendar.id}|}"
+				class="btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"
+				th:if="${calendar.author != null and calendar.author == providerid and provider == 'google'}">구글에 일정 저장
+			</a>
+		</div>
+	</div>
+</div>
+<script layout:fragment="script" type="text/javascript" th:src="@{/js/calendar_detail.js}"></script>
+</div>
+
+</html>

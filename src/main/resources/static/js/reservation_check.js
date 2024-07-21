@@ -28,11 +28,11 @@ document.addEventListener('DOMContentLoaded', function() {
 				}
 			});
 		},
-				eventClick: function(info) {
+		eventClick: function(info) {
 			// 클릭된 이벤트 정보
 			var eventObj = info.event;
 
-			
+
 			const valueToPass = $("[id='resource']").val();
 			const popupWidth = 850;
 			const popupHeight = 500;

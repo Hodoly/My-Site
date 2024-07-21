@@ -82,7 +82,7 @@ public class ReservationController {
 
 	@GetMapping("/get/reservations")
 	@ResponseBody
-	public List<CalendarEvent> getReservations(@RequestParam(required = false) String kind,
+	public List<ReservationEvent> getReservations(@RequestParam(required = false) String kind,
 			@RequestParam(required = false) Integer id) {
 		List<Reservation> reservations = null;
 		if (kind != null) {
@@ -104,7 +104,7 @@ public class ReservationController {
 				end = reservation.getEndDateTime().toString();
 			}
 
-			return new CalendarEvent(start, end, reservation.getSubject(), reservation.getResource().getColor(),
+			return new ReservationEvent(start, end, reservation.getSubject(), reservation.getResource().getColor(),
 					reservation.isAllday(), reservation.getId());
 		}).collect(Collectors.toList());
 	}

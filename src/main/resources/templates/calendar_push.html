@@ -1,0 +1,34 @@
+<html layout:decorate="~{popup_layout}">
+<div layout:fragment="content" class="container my-3">
+	<form th:action="@{|/calendar/push/${calendar.id}|}" th:object="${CalendarPushForm}" method="post" class="my-3">
+		<div th:if="${errorMessage}" th:text="${errorMessage}" style="color: red;"></div>
+		<h2 class="border-bottom py-2">구글에 일정 추가</h2>
+		<div>
+			<table class="table table-bordered">
+				<tr th:if="${calendar.author!=null}">
+					<th scrope="row">제목</th>
+					<td th:text="${calendar.subject}"></td>
+				</tr>
+				<tr>
+					<th scope="row">카테고리</th>
+					<td>
+						<select name="calendar" id="calendar">
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">날짜</th>
+					<td th:if="${allday == true}" th:text="${start} + ' ~ ' + ${end} + '  종일O'">
+					</td>
+					<td th:if="${allday == false}" th:text="${start} + ' ~ ' + ${end} + '  종일X'">
+					</td>
+				</tr>
+			</table>
+		</div>
+		<input type="submit" value="구글 일정에 추가" class="btn btn-dark my-2">
+	</form>
+</div>
+<script layout:fragment="script" type="text/javascript" th:src="@{/js/calendar_push.js}"></script>
+</div>
+
+</html>
