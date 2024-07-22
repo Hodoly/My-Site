@@ -24,29 +24,22 @@ public class MainController {
 
 	@GetMapping("/")
 	public String root(Model model, Authentication authentication) {
-		if (authentication != null) {
-			String name = userService.getUserName(authentication);
-			model.addAttribute("name", name);
-		}
 		return "home";
 	}
 
 	@GetMapping("/board")
 	public String boardMain(Model model, Authentication authentication) {
-		if (authentication != null) {
-			String name = userService.getUserName(authentication);
-			model.addAttribute("name", name);
-		}
 		return "redirect:/board/list";
 	}
 
 	@GetMapping("/calendar_home")
 	public String calendarMain(Model model, Authentication authentication) {
-		if (authentication != null) {
-			String name = userService.getUserName(authentication);
-			model.addAttribute("name", name);
-		}
 		return "redirect:/calendar/home";
+	}
+	
+	@GetMapping("/modal/{uri}")
+	public String modal(@PathVariable("uri") String uri ,Model model, Authentication authentication) {
+		return uri;
 	}
 
 }
