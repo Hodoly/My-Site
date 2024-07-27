@@ -21,7 +21,7 @@ import groovyjarjarantlr4.v4.parse.ANTLRParser.finallyClause_return;
 
 @Configuration
 @EnableWebSecurity
-@EnableAspectJAutoProxy
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 	private final CustomOAuth2UserService customOAuth2UserService;
 	private final CustomOAuth2AuthenticationFailureHandler customOAuth2AuthenticationFailureHandler;
@@ -39,7 +39,7 @@ public class SecurityConfig {
 				.csrf((csrf) -> csrf.ignoringRequestMatchers(new AntPathRequestMatcher("/h2-console/**")))
 				.headers((headers) -> headers.addHeaderWriter(
 						new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN)))
-//				.formLogin((formLogin) -> formLogin.loginPage("/user/login").defaultSuccessUrl("/"))
+				.formLogin((formLogin) -> formLogin.loginPage("/user/login").defaultSuccessUrl("/"))
 				.logout((logout) -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
 						.logoutSuccessUrl("/").invalidateHttpSession(true))
 				.oauth2Login(
