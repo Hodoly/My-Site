@@ -3,14 +3,37 @@ const interval = 30;
 const currentTime = new Date();
 let startTime, endTime;
 
-$('.datepicker').datepicker({
+//disable초기설정
+if ($("[id='allday']").is(":checked")) {
+	$("[name='startTime']").attr("disabled", true)
+	$("[name='endTime']").attr("disabled", true)
+} else {
+	$("[name='startTime']").attr("disabled", false)
+	$("[name='endTime']").attr("disabled", false)
+}
+if ($("[id='startDate']").val() != "" || $("[id='endDate']").val() != "") {
+	defaultSDate = $("[id='startDate']").val();
+	defaultEDate = $("[id='endDate']").val();
+} else {
+	defaultSDate = new Date();
+	defaultEDate = new Date();
+}
+
+$('#startDate').datepicker({
 	dateFormat: 'yy-mm-dd',
 	showOn: "button",
 	buttonImage: "https://cdn-icons-png.flaticon.com/512/2838/2838779.png",
 	buttonImageOnly: true,
 	defaultViewDate: { year: new Date().getFullYear(), month: new Date().getMonth(), day: new Date().getDate() },
-	minDate: new Date()
-}).datepicker('setDate', new Date());
+}).datepicker('setDate', defaultSDate);
+
+$('#endDate').datepicker({
+	dateFormat: 'yy-mm-dd',
+	showOn: "button",
+	buttonImage: "https://cdn-icons-png.flaticon.com/512/2838/2838779.png",
+	buttonImageOnly: true,
+	defaultViewDate: { year: new Date().getFullYear(), month: new Date().getMonth(), day: new Date().getDate() },
+}).datepicker('setDate', defaultEDate);
 
 function getNearestTime(currentTime, interval) {
 	let nearestTime = new Date(currentTime);
@@ -39,8 +62,10 @@ $('.timepicker').timepicker({
 	scrollbar: true,
 });
 
-$("[name='startTime']").timepicker('setTime', startTime.toTimeString().slice(0, 5));
-$("[name='endTime']").timepicker('setTime', endTime.toTimeString().slice(0, 5));
+if ($("[id='startTime']").val() == "" && $("[id='endTime']").val() == "") {
+	$("[name='startTime']").timepicker('setTime', startTime.toTimeString().slice(0, 5));
+	$("[name='endTime']").timepicker('setTime', endTime.toTimeString().slice(0, 5));
+}
 
 // 사용자가 종일 선택 시 시간 선택하지 못하도록 disabled 설정
 $("[id='allday']").off().on('change', function() {

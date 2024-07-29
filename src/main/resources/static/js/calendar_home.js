@@ -1,6 +1,13 @@
 
 document.addEventListener('DOMContentLoaded', function() {
-	$("#dialog").dialog({ autoOpen: false });
+	$("#dialog").dialog({
+		autoOpen: false,
+		buttons: {
+			"닫기": function() {
+				$(this).dialog("close");
+			}
+		}
+	});
 	var provider = $("[id='provider']").val();
 	var buttons = "";
 	if (provider == "google") {

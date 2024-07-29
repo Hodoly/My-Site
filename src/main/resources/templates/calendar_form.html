@@ -11,9 +11,9 @@
 		</div>
 		<div class="mb-3" style="margin-top: 2rem;">
 			<label for="date">날짜</label>
-			<input type="text" class="datepicker" name="startDate" readonly>
+			<input type="text" class="datepicker" th:field="*{startDate}" readonly>
 			~
-			<input type="text" class="datepicker" name="endDate" readonly>
+			<input type="text" class="datepicker" th:field="*{endDate}" readonly>
 			&nbsp;&nbsp;
 			<label for="checkbox-allday"> 종일
 				<input th:checked="${calendar.allday}" type="checkbox" name	="allday" id="allday">
@@ -21,15 +21,15 @@
 		</div>
 		<div class="mb-3">
 			<label for="time">시간</label>
-			<input type="text" class="timepicker" name="startTime" style="cursor: pointer;width: 90px;" readonly>
+			<input type="text" class="timepicker" th:field="*{startTime}" style="cursor: pointer;width: 90px;" readonly>
 			~
-			<input type="text" class="timepicker" name="endTime" style="cursor: pointer;width: 90px;" readonly>
+			<input type="text" class="timepicker" th:field="*{endTime}" style="cursor: pointer;width: 90px;" readonly>
 			<input type="button" value="일정보기" id="check" name="check" class="btn btn-dark my-2">
 		</div>
 		<div class="mb-3">
 			<label for="color">색상 지정</label>
 			<input type="color" id="colorPicker" style="vertical-align: middle;">
-			<input type="text" id="color" class="form-control" name="color" style="display: inline; width: 150px;">
+			<input type="text" class="form-control" th:field="*{color}" style="display: inline; width: 150px;">
 		</div>
 		<input type="submit" value="저장" class="btn btn-dark my-2">
 	</form>

@@ -184,7 +184,8 @@ public class CalendarController {
 		calendarForm.setEndDate(calendar.getEndDateTime().format(dateFormatter));
 		calendarForm.setStartTime(calendar.getStartDateTime().format(timeFormatter));
 		calendarForm.setEndTime(calendar.getEndDateTime().format(timeFormatter));
-
+		calendarForm.setColor(calendar.getColor());
+		
 		model.addAttribute("calendar", calendar);
 		model.addAttribute("layout", "popup_layout");
 		return "calendar_form";
