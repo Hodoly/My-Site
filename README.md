@@ -14,4 +14,4 @@ spring-boot로 구성한 그룹웨어입니다.
 11. jar파일 배포
 
 사용기술
-spring-boot, java, javascript, html, css, jquery, google cloud platform, thymeleaf, jqa, aws, ubuntu
+spring-boot, java, javascript, html, css, jquery, google cloud platform, thymeleaf, JPA, AWS, ubuntu
